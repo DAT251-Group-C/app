@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  project: app
+  account-id: 53b218bcbcf8884b7fb40d27ee50ac09
+
 jobs:
   install:
     name: Install dependencies
@@ -105,6 +109,72 @@ jobs:
       - name: Test - Unit
         run: pnpm run test:unit
 
+  publish:
+    name: Publish to Cloudflare Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: Pull Request (${{ github.head_ref }})
+      url: ${{ steps.branch-url.outputs.url }}
+    permissions:
+      contents: read
+      checks: write
+      deployments: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+
+      - name: Download dist folder
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to Cloudflare Pages
+        id: publish
+        uses: cloudflare/pages-action@v1.5.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ env.account-id }}
+          projectName: ${{ env.project }}
+          directory: dist/app
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Deploying with
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ## Deploying with &nbsp;<a href="https://pages.dev"><img alt="Cloudflare Pages" src="https://user-images.githubusercontent.com/23264/106598434-9e719e00-654f-11eb-9e59-6167043cfa01.png" width="16"></a> &nbsp;Cloudflare Pages
+            <table><tr><td><strong>Latest commit:</strong> </td><td>
+            <code>${{ github.sha }}</code>
+            </td></tr>
+            <tr><td><strong>Status:</strong></td><td>&nbsp;✅&nbsp; Deploy successful!</td></tr>
+            <tr><td><strong>Branch Preview URL:</strong></td><td>
+            <a href='${{ steps.publish.outputs.alias }}'>${{ steps.publish.outputs.alias }}</a>
+            </td></tr>
+            </table>
+            *Pusher: @${{ github.actor }}*
+
   test_e2e:
     name: Test - E2E
     needs: build
@@ -130,7 +200,7 @@ jobs:
           path: dist/
 
       - name: Install Playwright
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Test - E2E
-        run: npx playwright test
+        run: pnpm test:e2e
