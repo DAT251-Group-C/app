@@ -111,9 +111,10 @@ jobs:
 
   publish:
     name: Publish to Cloudflare Pages
+    needs: build
     runs-on: ubuntu-latest
     environment:
-      name: Pull Request (${{ github.head_ref }})
+      name: Pull Request (${{ github.event.pull_request.number }})
       url: ${{ steps.branch-url.outputs.url }}
     permissions:
       contents: read
@@ -123,14 +124,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
         with:
           version: 8
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
 
       - name: Download dist folder
         uses: actions/download-artifact@v4
