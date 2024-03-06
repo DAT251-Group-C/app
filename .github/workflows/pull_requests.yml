@@ -186,6 +186,12 @@ jobs:
         with:
           node-version: 20.x
 
+      - name: Download dist folder
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
       - run: pnpm install --frozen-lockfile
 
       - name: Install Playwright
