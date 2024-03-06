@@ -185,7 +185,7 @@ jobs:
           path: dist/
 
       - name: Install Playwright
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install
 
       - name: Install Playwright Dependencies
         run: npx playwright install-deps
