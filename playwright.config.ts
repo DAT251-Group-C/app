@@ -1,5 +1,5 @@
+import { defineConfig } from '@playwright/test'
 import process from 'node:process'
-import { defineConfig, devices } from '@playwright/test'
 
 /**
  * Read environment variables from file.
@@ -46,15 +46,15 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
+      name: 'Google Chrome',
       use: {
-        ...devices['Desktop Chrome']
+        channel: 'chrome'
       }
     },
     {
-      name: 'webkit',
+      name: 'Webkit',
       use: {
-        ...devices['Desktop Safari']
+        channel: 'webkit'
       }
     }
 

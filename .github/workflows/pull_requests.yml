@@ -6,6 +6,7 @@ on:
 
 jobs:
   install:
+    name: Install dependencies
     runs-on: ubuntu-latest
 
     steps:
@@ -36,6 +37,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
   lint:
+    name: Lint (ESLint & Prettier)
     needs: install
     runs-on: ubuntu-latest
 
@@ -56,6 +58,7 @@ jobs:
         run: pnpm run lint
 
   build:
+    name: Build
     needs: install
     runs-on: ubuntu-latest
 
@@ -76,12 +79,13 @@ jobs:
         run: pnpm run build
 
       - name: Upload dist folder
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/
 
   test_unit:
+    name: Unit tests
     needs: build
     runs-on: ubuntu-latest
 
@@ -102,6 +106,7 @@ jobs:
         run: pnpm run test:unit
 
   test_e2e:
+    name: E2E tests
     needs: build
     runs-on: ubuntu-latest
 
