@@ -199,3 +199,5 @@ jobs:
 
       - name: Test - E2E
         run: pnpm test:e2e
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ needs.publish.outputs.url }}
