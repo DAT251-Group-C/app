@@ -58,7 +58,7 @@ jobs:
         run: pnpm run lint
 
   build:
-    name: Build
+    name: Build Application
     needs: install
     runs-on: ubuntu-latest
 
@@ -147,7 +147,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Install dependencies
-        run: npx playwright install
+        run: npx playwright install-deps
 
       - name: Test - E2E
         run: pnpm run test:e2e
