@@ -130,7 +130,7 @@ jobs:
           path: dist/
 
       - name: Install Playwright
-        run: pnpm exec playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Test - E2E
-        run: pnpm test:e2e
+        run: npx playwright test
