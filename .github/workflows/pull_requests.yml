@@ -106,8 +106,10 @@ jobs:
           name: dist
           path: dist/
 
+      - run: pnpm install --frozen-lockfile
+
       - name: Deploy to Github Pages
-        run: gh-pages -d dist
+        run: pnpm deploy
 
   test_unit:
     name: Test - Unit
