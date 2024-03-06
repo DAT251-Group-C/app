@@ -84,7 +84,7 @@ jobs:
           name: dist
           path: dist/
 
-  test_unit:
+  deploy:
     name: Deploy (Github Pages)
     needs: build
     runs-on: ubuntu-latest
@@ -169,7 +169,7 @@ jobs:
 
       - name: Install Playwright
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Install dependencies
         run: npx playwright install-deps
