@@ -194,13 +194,24 @@ jobs:
           name: dist
           path: dist/
 
+      - name: Get current playwright version
+        id: playwright-version
+        run: |
+          playwrightVersion=$(npm view @playwright/test version)
+          echo "{playwrightVersion=$playwrightVersion}" >> $GITHUB_OUTPUT
+
+      - name: Cache playwright binaries
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: cache-playwright-linux-${{ steps.playwright-version.outputs.playwrightVersion }}
+
       - name: Install Playwright
-        run: npx playwright install
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
 
-      - name: Install Playwright Dependencies
-        run: npx playwright install-deps
-
-      - name: Test - E2E
-        run: npx playwright test
+      - name: Run Playwright tests
+        run: pnpm e2e
         env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{ needs.publish.outputs.url }}
+          PLAYWRIGHT_TEST_BASE_URL: ${{ needs.build-publish.outputs.url }}
