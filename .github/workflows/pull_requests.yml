@@ -27,6 +27,14 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
 
+      - name: Cache pnpm modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
   lint:
     needs: install
     runs-on: ubuntu-latest
@@ -66,7 +74,7 @@ jobs:
 
       - name: Build
         run: pnpm run build
-      
+
       - name: Upload dist folder
         uses: actions/upload-artifact@v2
         with:
@@ -115,6 +123,23 @@ jobs:
         with:
           name: dist
           path: dist/
+
+      - name: Get current playwright version
+        id: playwright-version
+        run: |
+          playwrightVersion=$(npm view @playwright/test version)
+          echo "{playwrightVersion=$playwrightVersion}" >> $GITHUB_OUTPUT
+
+      - name: Cache playwright binaries
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: cache-playwright-linux-${{ steps.playwright-version.outputs.playwrightVersion }}
+
+      - name: Install Playwright
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install
 
       - name: Test - E2E
         run: pnpm run test:e2e
