@@ -22,13 +22,7 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+      - run: pnpm install --frozen-lockfile
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
@@ -48,13 +42,7 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+      - run: pnpm install --frozen-lockfile
 
       - name: Run lint
         run: pnpm run lint
@@ -74,13 +62,7 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+      - run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm run build
@@ -100,13 +82,7 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+      - run: pnpm install --frozen-lockfile
 
       - name: Test - Unit
         run: pnpm run test:unit
@@ -126,13 +102,7 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+      - run: pnpm install --frozen-lockfile
 
       - name: Test - E2E
         run: pnpm run test:e2e
