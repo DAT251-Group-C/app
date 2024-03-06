@@ -85,6 +85,31 @@ jobs:
           path: dist/
 
   test_unit:
+    name: Deploy (Github Pages)
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Download dist folder
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Deploy to Github Pages
+        run: gh-pages -d dist
+
+  test_unit:
     name: Test - Unit
     needs: build
     runs-on: ubuntu-latest
