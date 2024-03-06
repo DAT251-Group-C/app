@@ -144,7 +144,7 @@ jobs:
 
       - name: Install Playwright
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Test - E2E
         run: pnpm run test:e2e
