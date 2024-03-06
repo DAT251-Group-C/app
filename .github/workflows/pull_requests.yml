@@ -140,7 +140,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.account-id }}
           projectName: ${{ env.project }}
-          directory: dist/app
+          directory: dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.head_ref }}
 
