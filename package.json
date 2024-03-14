@@ -15,6 +15,7 @@
     "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore && prettier --write src/"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.8",
     "pinia": "^2.1.7",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
